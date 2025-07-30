@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>簡易圍棋遊戲</title>
+  <style>
+    canvas { background: burlywood; display: block; margin: auto; }
+    #info { text-align: center; font-family: sans-serif; margin-top: 10px; }
+  </style>
+</head>
+<body>
+<canvas id="board" width="372" height="372"></canvas>
+<div id="info">黑方回合</div>
+
+<script>
+const BOARD_SIZE = 19;
+const CELL_SIZE = 20;
+const MARGIN = 14;
+const BLACK = 1, WHITE = 2, EMPTY = 0;
+
+const board = Array.from({ length: BOARD_SIZE }, () => Array(BOARD_SIZE).fill(EMPTY));
+let currentPlayer = BLACK;
+
+const canvas = document.getElementById('board');
+const ctx = canvas.getContext('2d');
+const info = document.getElementById('info');
+
+function drawBoard() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = 'burlywood';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  for (let i = 0; i < BOARD_SIZE; i++) {
+    const pos = MARGIN + i * CELL_SIZE;
+    ctx.beginPath();
+    ctx.moveTo(MARGIN, pos);
+    ctx.lineTo(MARGIN + (BOARD_SIZE - 1) * CELL_SIZE, pos);
+    ctx.moveTo(pos, MARGIN);
+    ctx.lineTo(pos, MARGIN + (BOARD_SIZE - 1) * CELL_SIZE);
+    ctx.stroke();
+  }
+
+  for (let y = 0; y < BOARD_SIZE; y++) {
+    for (let x = 0; x < BOARD_SIZE; x++) {
+      if (board[y][x] !== EMPTY) {
+        const cx = MARGIN + x * CELL_SIZE;
+        const cy = MARGIN + y * CELL_SIZE;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 7, 0, 2 * Math.PI);
+        ctx.fillStyle = board[y][x] === BLACK ? 'black' : 'white';
+        ctx.fill();
+        ctx.stroke();
+      }
+    }
+  }
+}
+
+canvas.addEventListener('click', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const x = Math.round((e.clientX - rect.left - MARGIN) / CELL_SIZE);
+  const y = Math.round((e.clientY - rect.top - MARGIN) / CELL_SIZE);
+  if (x >= 0 && x < BOARD_SIZE && y >= 0 && y < BOARD_SIZE && board[y][x] === EMPTY) {
+    board[y][x] = currentPlayer;
+    currentPlayer = 3 - currentPlayer;
+    info.textContent = currentPlayer === BLACK ? '黑方回合' : '白方回合';
+    drawBoard();
+  }
+});
+
+drawBoard();
+</script>
+</body>
+</html>
