@@ -46,9 +46,10 @@ function drawBoard() {
         const cx = MARGIN + x * CELL_SIZE;
         const cy = MARGIN + y * CELL_SIZE;
         ctx.beginPath();
-        ctx.arc(cx, cy, 7, 0, 2 * Math.PI);
+        ctx.arc(cx, cy, CELL_SIZE * 0.4, 0, 2 * Math.PI);
         ctx.fillStyle = board[y][x] === BLACK ? 'black' : 'white';
         ctx.fill();
+        ctx.strokeStyle = 'black';
         ctx.stroke();
       }
     }
